@@ -1,0 +1,337 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <title>CCF Room Call</title> 
+  <link rel="stylesheet" href="css/jquery.mobile-1.4.2.min.css" />
+  <link rel="stylesheet" href="css/grid-listview.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script src="js/jquery-1.9.1.min.js"></script>
+  <script src="js/jquery.mobile-1.4.2.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/modernizr.js"></script>
+
+</head> 
+<body> 
+
+<!-- Start of page: #login -->
+<div data-role="page" id="login" data-theme="b">
+
+  <div data-role="header" data-theme="b">
+    <h1>Room Call Login</h1>
+  </div><!-- /header -->
+
+  <div data-role="content" >
+  	  <h3 position="fixed">Enter Employee ID or swipe badge</h3>
+      <input type="text" id="employeeID" placeholder="Employee ID" class="ui-input-text ui-body-b" autofocus="autofocus">
+      <a href="#" id="loginBtn" class="ui-shadow ui-btn ui-corner-all" data-rel="popup">Login</a>
+  </div><!-- /content --> 
+</div><!-- /page login -->
+
+
+
+<!-- Start of page: #campus -->
+<div data-role="page" id="campus" data-theme="b" class="my-page" class="ui-state-persist">
+
+  <div data-role="header" data-theme="b" data-position="fixed" >
+    <h1>Select a Campus</h1>
+    <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
+
+  </div><!-- /header -->
+
+    <div data-role="content" data-theme="b">
+      <ul data-role="listview" data-inset="true" id="campusList">
+      </ul>
+    </div><!-- /content -->
+  
+
+  <div data-role="footer" data-position="fixed" class="ui-state-persist" data-theme="b">
+    <div data-role="navbar" data-theme="b">
+        <ul>
+            <li><a href="#" id="newCall" data-icon="plus">New Call</a></li>
+            <li><a href="#existing" data-icon="bullets">Existing Calls</a></li>
+            <li><a href="#review" data-icon="check">Close Call</a></li>
+        </ul>
+    </div><!-- /navbar -->
+  </div><!-- /footer -->
+</div><!-- /page campus -->
+
+
+
+<!-- Start of page: #building -->
+<div data-role="page" id="building" data-theme="b" class="my-page">
+
+  <div data-role="header" data-theme="b" data-position="fixed">
+    <h1>Building List</h1>
+    <a href="#campus" data-icon="arrow-l" class="ui-btn-left">Campus</a>
+	<a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
+  </div><!-- /header -->
+
+  <div data-role="content" data-theme="b">  
+    <h2>Select a building</h2>
+    <ul data-role="listview" data-inset="true" id="bldgList">
+    </ul>
+  </div><!-- /content -->
+
+  <div data-role="footer" data-position="fixed" class="ui-state-persist" data-theme="b">
+    <div data-role="navbar" data-theme="b">
+        <ul>
+            <li><a href="#" id="newCall" data-icon="plus">New Call</a></li>
+            <li><a href="#existing" data-icon="bullets">Existing Calls</a></li>
+            <li><a href="#review" data-icon="check">Close Call</a></li>
+        </ul>
+    </div><!-- /navbar -->
+  </div><!-- /footer -->
+</div><!-- /page building -->
+
+
+
+<!-- Start of page: #floor -->
+<div data-role="page" id="floor" data-theme="b" class="my-page">
+
+  <div data-role="header" data-theme="b" data-position="fixed">
+    <h1>Floor List</h1>
+    <a href="#building" data-icon="arrow-l" class="ui-btn-left">Building</a>
+  <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
+  </div><!-- /header -->
+
+  <div data-role="content" data-theme="b">  
+    <h2>Select a Floor</h2>
+    <ul data-role="listview" data-inset="true" id="floorList">
+    </ul>
+  </div><!-- /content -->
+
+  <div data-role="footer" data-position="fixed" class="ui-state-persist" data-theme="b">
+    <div data-role="navbar" data-theme="b">
+        <ul>
+            <li><a href="#" id="newCall" data-icon="plus">New Call</a></li>
+            <li><a href="#existing" data-icon="bullets">Existing Calls</a></li>
+            <li><a href="#review" data-icon="check">Close Call</a></li>
+        </ul>
+    </div><!-- /navbar -->
+  </div><!-- /footer -->
+</div><!-- /page floor -->
+
+
+
+<!-- Start of page: #unit -->
+<div data-role="page" id="unit" data-theme="b" class="my-page">
+
+  <div data-role="header" data-theme="b" data-position="fixed">
+    <h1>Unit List</h1>
+    <a href="#building" data-icon="arrow-l" class="ui-btn-left">Building</a>
+    <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
+  </div><!-- /header -->
+
+  <div data-role="content" data-theme="b">  
+    <h2>Select a unit</h2>
+    <ul data-role="listview" data-inset="true" id="unitList">
+    </ul>
+  </div><!-- /content -->
+
+  <div data-role="footer" data-position="fixed" class="ui-state-persist" data-theme="b">
+    <div data-role="navbar" data-theme="b">
+        <ul>
+            <li><a href="#" id="newCall" data-icon="plus">New Call</a></li>
+            <li><a href="#existing" data-icon="bullets">Existing Calls</a></li>
+            <li><a href="#review" data-icon="check">Close Call</a></li>
+        </ul>
+    </div><!-- /navbar -->
+  </div><!-- /footer -->
+</div><!-- /page unit -->
+
+
+
+<!-- Start of page: #equipment -->
+<div data-role="page" id="equipment" data-theme="b" class="my-page">
+
+  <div data-role="header" data-theme="b" data-position="fixed">
+    <h1>Equipment List</h1>
+    <a href="#unit" data-icon="arrow-l" class="ui-btn-left">Unit</a>
+    <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
+  </div><!-- /header -->
+
+  <div data-role="content" data-theme="b">  
+    <h2>Select type of equipment</h2>
+    <ul data-role="listview" data-inset="true" id="equipmentList">
+    </ul>
+  </div><!-- /content -->
+
+  <div data-role="footer" data-position="fixed" class="ui-state-persist" data-theme="b">
+    <div data-role="navbar" data-theme="b">
+        <ul>
+            <li><a href="#" id="newCall" data-icon="plus">New Call</a></li>
+            <li><a href="#existing" data-icon="bullets">Existing Calls</a></li>
+            <li><a href="#" data-icon="action" id="saveBtn">Save and Exit</a></li>
+            <li><a href="#review" data-icon="check">Close Call</a></li>
+        </ul>
+    </div><!-- /navbar -->
+  </div><!-- /footer -->
+</div><!-- /page equipment -->
+
+
+
+<!-- Start of page: #issue -->
+<div data-role="page" id="issue" data-theme="b" class="my-page">
+
+  <div data-role="header" data-theme="b" data-position="fixed">
+    <h1>Issues</h1>
+    <a href="#equipment" data-icon="arrow-l" class="ui-btn-left">Equipment</a>
+    <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
+  </div><!-- /header -->
+
+  <div data-role="content" data-theme="b">  
+    <h2>Select type of issue</h2>
+    <ul data-role="listview" data-inset="true" id="issueList">
+    </ul>
+  </div><!-- /content -->
+
+  <div data-role="footer" data-position="fixed" class="ui-state-persist" data-theme="b">
+    <div data-role="navbar" data-theme="b">
+        <ul>
+            <li><a href="#" id="newCall" data-icon="plus">New Call</a></li>
+            <li><a href="#existing" data-icon="bullets">Existing Calls</a></li>
+            <li><a href="#" data-icon="action" id="saveBtn">Save and Exit</a></li>
+            <li><a href="#review" data-icon="check">Close Call</a></li>
+        </ul>
+    </div><!-- /navbar -->
+  </div><!-- /footer -->
+</div><!-- /page issue -->
+
+
+
+<!-- Start of page: #time -->
+<div data-role="page" id="time" data-theme="b" class="my-page">
+
+  <div data-role="header" data-theme="b" data-position="fixed">
+    <h1>Time</h1>
+    <a href="#issue" data-icon="arrow-l" class="ui-btn-left">Issue</a>
+    <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
+  </div><!-- /header -->
+
+  <div data-role="content" data-theme="b">  
+    <h2>Select length of call (mins)</h2>
+    <ul data-role="listview" data-inset="true" id="timeList">
+    	<li><a href='#' class='timeChoice' id="5"><h2>5</h2></a></li>
+    	<li><a href='#' class='timeChoice' id="10"><h2>10</h2></a></li>
+    	<li><a href='#' class='timeChoice' id="15"><h2>15</h2></a></li>
+    	<li><a href='#' class='timeChoice' id="20"><h2>20</h2></a></li>
+    	<li><a href='#' class='timeChoice' id="30"><h2>30</h2></a></li>
+    	<li><a href='#' class='timeChoice' id="45"><h2>45</h2></a></li>
+    	<li><a href='#' class='timeChoice' id="60"><h2>60</h2></a></li>
+    	<li><a href='#' class='timeChoice' id="90"><h2>90</h2></a></li>
+    </ul>
+  </div><!-- /content -->
+
+  <div data-role="footer" data-position="fixed" class="ui-state-persist" data-theme="b">
+    <div data-role="navbar" data-theme="b">
+        <ul>
+            <li><a href="#" id="newCall" data-icon="plus">New Call</a></li>
+            <li><a href="#existing" data-icon="bullets">Existing Calls</a></li>
+            <li><a href="#" data-icon="action" id="saveBtn">Save and Exit</a></li>
+            <li><a href="#review" data-icon="check">Close Call</a></li>
+        </ul>
+    </div><!-- /navbar -->
+  </div><!-- /footer -->
+</div><!-- /page time -->
+
+
+
+<!-- Start of page: #review -->
+<div data-role="page" id="review" data-theme="b" class="my-page">
+
+  <div data-role="header" data-theme="b" data-position="fixed">
+    <h1>Time</h1>
+    <a href="#" data-rel="back" data-icon="arrow-l" data-role="button">Go back</a>
+    <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
+  </div><!-- /header -->
+
+  <div data-role="content" data-theme="b">  
+    <h2>Review call information</h2>
+
+    <ul data-inset="true" style="padding:10px;">
+        <li><a href="#campus" data-role="button" id="campusReview">Select a Campus</a></li>
+        <li><a href="#building" data-role="button" id="buildingReview">Select a Building</a></li>
+        <li><a href="#unit" data-role="button" id="unitReview">Select a Unit</a></li>
+        <li><a href="#equipment" data-role="button" id="equipmentReview">Select Equipment type</a></li>
+        <li><a href="#issue" data-role="button" id="issueReview">Select Issue type</a></li>
+        <li><a href="#time" data-role="button" id="timeReview">Select Time</a></li>  
+    </ul>
+
+    <a href="#" id='closeCallBtn' data-role="button" class="ui-btn-active">Close Room Call</a>
+
+  </div><!-- /content -->
+
+  <div data-role="footer" data-position="fixed" class="ui-state-persist" data-theme="b">
+    <div data-role="navbar" data-theme="b">
+        <ul>
+            <li><a href="#" id="newCall" data-icon="plus">New Call</a></li>
+            <li><a href="#existing" data-icon="bullets">Existing Calls</a></li>
+            <li><a href="#" data-icon="action" id="saveBtn">Save and Exit</a></li>
+            <li><a href="#" data-icon="check" class="ui-btn-active">Close Call</a></li>
+        </ul>
+    </div><!-- /navbar -->
+  </div><!-- /footer -->
+</div><!-- /page review -->
+
+
+
+<!-- Start of page: #existing -->
+<div data-role="page" id="existing" data-theme="b" class="my-page">
+
+  <div data-role="header" data-theme="b" data-position="fixed">
+    <h1>Time</h1>
+    <a href="#" data-rel="back" data-icon="arrow-l" data-role="button">Go back</a>
+    <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
+  </div><!-- /header -->
+
+  <div data-role="content" data-theme="b">  
+    <h2>Existing Room calls</h2>
+    <ul data-role="listview" data-inset="true" id="woList">
+    </ul>
+  </div><!-- /content -->
+
+  <div data-role="footer" data-position="fixed" class="ui-state-persist" data-theme="b">
+    <div data-role="navbar" data-theme="b">
+        <ul>
+            <li><a href="#" id="newCall" data-icon="plus">New Call</a></li>
+            <li><a href="#existing" data-icon="bullets" class="ui-btn-active">Existing Calls</a></li>
+        </ul>
+    </div><!-- /navbar -->
+  </div><!-- /footer -->
+</div><!-- /page existing -->
+
+
+<!-- Logout Popup -->
+<div id="logout" data-overlay-theme="b" data-theme="b" class="ui-popup ui-body-a ui-overlay-shadow ui-corner-all">
+    <!-- This popup has its theme explicitly defined via data-theme="b"
+         because it has no parent from which to automatically inherit
+         its theme -->
+    <div data-role="header" data-theme="b">
+    <h1>Logout?</h1>
+    </div>
+    <div role="main" class="ui-content center-wrapper">
+        <h3 class="ui-title">Are you sure you want to log out?</h3>
+        <a href="#login" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">Yes</a>
+        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">No</a>
+    </div>
+</div>
+
+<!-- No user Popup -->
+<div id="noUser" data-overlay-theme="b" data-theme="b" class="ui-popup ui-body-a ui-overlay-shadow ui-corner-all">
+    <!-- This popup has its theme explicitly defined via data-theme="b"
+         because it has no parent from which to automatically inherit
+         its theme -->
+    <div data-role="header" data-theme="b">
+    <h1>Not found</h1>
+    </div>
+    <div role="main" class="ui-content center-wrapper">
+        <h3 class="ui-title">No user found with that ID. Try again</h3>
+        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">OK</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+	"equipment": [	
+	{
+		"device": "Anesthesia Machine",
+		"issue": [ "Leak", "Flow Sensors", "User Error", "Vaporizer"]
+	},
+
+	{
+		"device": "Patient Monitor",
+		"issue": [ "Power", "Touch Screen", "Settings", "User Error"]
+	},
+
+	{
+		"device": "BIS",
+		"issue": [ "Bad Cable", "Monitor", "Error", "User Error"]
+	},
+
+	{
+		"device": "Patient Cables",
+		"issue": [ "IBP", "NIBP", "SpO2", "ECG", "Temperature", "Cardiac Output"]
+	}
+			
+	]
+}

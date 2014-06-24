@@ -1,0 +1,20 @@
+{ 
+	"Dan Wozniak":
+	{
+		"employeeID": "864975",
+		"username": "wozniad",
+		"campus": "Main Campus",
+		"firstName": "Dan",
+		"lastName": "Wozniak"
+	},
+
+	"John Basar":
+	{
+		"employeeID": "840109",
+		"username": "basarj",
+		"campus": "Main Campus",
+		"firstName": "John",
+		"lastName": "Basar"
+	}
+
+}			

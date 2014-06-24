@@ -1,0 +1,59 @@
+{
+	"locations": [	
+	{
+		"campus": "Main Campus",
+		"buildings": [
+			{
+				"building": "E BLDG",
+				"units":  [ 
+					"E20 PACU", "E OR", "E12", "E14"
+				]
+			},
+
+			{
+				"building": "H BLDG",
+				"units":  [
+					"H21 PACU", "H OR", "EPS", "H23"
+				]
+			},
+
+			{
+				"building": "M BLDG",
+				"units":  [
+					"Peds OR", "M20", "M21", "M22", "M23", "M24", "M25",
+					"M42"
+				]
+			},
+
+			{
+				"building": "G BLDG",
+				"units":  [
+					"G OR", "G31", "G50", "G51", "G52", "G53", "G54"
+				]
+			},
+
+			{
+				"building": "J BLDG",
+				"units":  [
+					"J OR", "J ICU"
+				]
+			}
+
+		]
+			
+	},
+
+	{
+		"campus": "Hillcrest",
+		"buildings": [
+			{
+				"building": "Main Tower",
+				"units":  [
+					"OR", "ICU", "PACU", "SICU"
+				]
+			}
+		]
+			
+	}
+	]
+}
