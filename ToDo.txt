@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 - Location selection
 	- Unit
 	- Bedspace
@@ -14,8 +13,3 @@
 - Equipment and issue type
 	- JSON?
 	- New table in database?
-=======
-
-- Popup windows
-	- No user
->>>>>>> First commit

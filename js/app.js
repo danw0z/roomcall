@@ -1,18 +1,9 @@
 // Instantiate the popup on DOMReady, and enhance its contents
 $(function() {
     $( "#logout" ).enhanceWithin().popup();
-<<<<<<< HEAD
     $( "#noUser" ).enhanceWithin().popup();
 });
 
-
-=======
-});
-$(function() {
-    $( "#noUser" ).enhanceWithin().popup();
-});
-
->>>>>>> First commit
 $(function () {
     
 	idleTimer = null;
