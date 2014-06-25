@@ -110,6 +110,7 @@ $(document).on("pageinit", "#campus", function () {
         e.preventDefault();
         sessionStorage.setItem('campus', this.text);
         sessionStorage.setItem('campusID', this.id);
+        sessionStorage.setItem('locationID', this.id);
         sessionStorage.removeItem('building');
         sessionStorage.removeItem('floor');
 		sessionStorage.removeItem('unit');
@@ -156,6 +157,7 @@ $(document).on("pageinit", "#building", function () {
         e.preventDefault();
         sessionStorage.setItem('building', this.text);
         sessionStorage.setItem('buildingID', this.id);
+        sessionStorage.setItem('locationID', this.id);
         sessionStorage.removeItem('floor');
         sessionStorage.removeItem('unit');
         $.mobile.changePage("#floor", { transition: "none"});   
@@ -202,8 +204,9 @@ $(document).on("pageinit", "#floor", function () {
         e.preventDefault();
         sessionStorage.setItem('floor', this.text);
         sessionStorage.setItem('floorID', this.id);
+        sessionStorage.setItem('locationID', this.id);
         sessionStorage.removeItem('unit');
-        $.mobile.changePage("#unit", { transition: "none"});   
+        $.mobile.changePage("#equipment", { transition: "none"});   //change back to #unit once units are in hierarchy
     });	        
 
 });
@@ -309,19 +312,10 @@ $(document).on("pageinit", "#issue", function () {
     $('#issueList').on("vclick", ".issueChoice", function (e) {
         e.preventDefault();
         sessionStorage.setItem('issue', this.id);
-        $.mobile.changePage("#time", { transition: "none"});   
-    });	        
-
-});
-
-$(document).on("pageinit", "#time", function () {
-    $('#timeList').on("vclick", ".timeChoice", function (e) {
-        e.preventDefault();
-        sessionStorage.setItem('time', this.id);
         $.mobile.changePage("#review", { transition: "none"});   
     });	        
-
 });
+
 
 $(document).on("pagebeforeshow", "#review", function () {
 	if (sessionStorage.getItem("campus") != '') {
@@ -357,27 +351,40 @@ $(document).on("pagebeforeshow", "#review", function () {
 });
 
 $(document).on("click", "#closeCallBtn", function () {
-	function ajax() {
+    $.mobile.changePage("#time", { transition: "none"});
+});
+
+$(document).on("pageinit", "#time", function () {
+    $('#timeList').on("vclick", ".timeChoice", function (e) {
+        e.preventDefault();
+        sessionStorage.setItem('time', this.id);
+
+        function ajax() {
 	    return $.ajax({
 	        type:     "post",
 	        url:      "inc/setWO.php",
 	        dataType: "text",
-	        data:      { tech: sessionStorage.getItem('username'), status: 'Complete',   
-	        campus: sessionStorage.getItem('campus'), building : sessionStorage.getItem('building'),
-	        unit: sessionStorage.getItem('unit'), equipment: sessionStorage.getItem('equipment'),
+	        data:      { workerID: localStorage.getItem('id'), close: TRUE, update: FALSE,   
+	        locationID: sessionStorage.getItem('locationID'), equipment: sessionStorage.getItem('equipment'),
 	        issue: sessionStorage.getItem('issue'), time: sessionStorage.getItem('time'),
-	    	index: sessionStorage.getItem('index') }
+	        workOrderID: sessionStorage.getItem('workOrderID') }
 		});
 	}
 
-	$.when(ajax()).done(function(units) {
-		$.mobile.changePage("#existing", { transition: "none"});  
-	});
-
+		$.when(ajax()).done(function(units) {
+			$.mobile.changePage("#existing", { transition: "none"});  
+		});   
+    });	        
 });
 
 $(document).on("click", "#saveBtn", function () {
-	if (typeof sessionStorage.getItem('equipment') == 'undefined') {
+	if (typeof sessionStorage.getItem('locationDesc') == 'undefined') {
+		var locationDesc = '';
+	} else {
+		var locationDesc = sessionStorage.getItem('locationDesc');
+	}
+
+	if (sessionStorage.getItem('equipment') == 'undefined') {
 		var selectedEquipment = '';
 	} else {
 		var selectedEquipment = sessionStorage.getItem('equipment');
@@ -389,26 +396,21 @@ $(document).on("click", "#saveBtn", function () {
 		var selectedIssue = sessionStorage.getItem('issue');
 	}
 
-	if (sessionStorage.getItem('time') == 'undefined') {
-		var selectedTime = '';
-	} else {
-		var selectedTime = sessionStorage.getItem('time');
-	}
+	problemDesc = selectedEquipment + " - " + selectedIssue;
+
 
 	function ajax() {
 	    return $.ajax({
 	        type:     "post",
-	        url:      "inc/setWO.php",
+	        url:      "inc/SetWO.php",
 	        dataType: "text",
-	        data:      { tech: sessionStorage.getItem('username'), status: 'In Progress',   
-	        campus: sessionStorage.getItem('campus'), building : sessionStorage.getItem('building'),
-	        unit: sessionStorage.getItem('unit'), equipment: selectedEquipment,
-	        issue: selectedIssue, time: selectedTime,
-	    	index: sessionStorage.getItem('index') }
+	        data:      { workerID: localStorage.getItem('id'), locationID: sessionStorage.getItem('locationID'),   
+	        locationDesc : locationDesc, problemDesc : problemDesc }
 		});
 	}
 
-	$.when(ajax()).done(function(units) {
+	$.when(ajax()).done(function(woID) {
+		sessionStorage.setItem(workOrderID, woID)
 		$.mobile.changePage("#existing", { transition: "none"});  
 	});
 
@@ -434,7 +436,7 @@ $(document).on("pagebeforeshow", "#existing", function () {
 	    	$.each(woInfo, function(i, obj) {
 	    		$.each(obj, function(key, wo) {
 	    			sessionStorage.setItem('WO#' + wo.WONumber, JSON.stringify(wo));
-				li += "<li><a href='#' class='woChoice' id='WO#"+wo.WONumber+"'><h2>WO #: " + wo.WONumber + "</h2><p>Date: <p>Location: " + wo.Location +"</p></a></li>";
+				li += "<li><a href='#' class='woChoice' id='WO#"+wo.WONumber+"'><h2>WO #: " + wo.WONumber + "</h2><p>Date: " + wo.DateCreated.date + "<p>Location: " + wo.Location +"</p></a></li>";
 		    	});	       
 		    }); 
  
