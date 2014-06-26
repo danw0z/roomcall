@@ -4,6 +4,7 @@ $(function() {
     $( "#noUser" ).enhanceWithin().popup();
 });
 
+// Automatic idle logout. idleWait is how long (ms) to wait before logging someone out.
 $(function () {
     
 	idleTimer = null;
@@ -22,6 +23,9 @@ $(function () {
     
     });
 
+///////////////////////
+///// Login page /////
+/////////////////////
 $(document).on('pagebeforeshow', '#login', function(){ 
 	$('#employeeID').val('');
 	sessionStorage.clear();
@@ -44,7 +48,6 @@ $(document).on('change', '#employeeID', function() {
 
 });
 
-
 $(document).on('vclick', '#loginBtn', function() {
 	var employeeID = $('#employeeID').val();    
     function ajax() {
@@ -52,7 +55,7 @@ $(document).on('vclick', '#loginBtn', function() {
 	        type:     "post",
 	        url:      "inc/getUser.php",
 	        dataType: "json",
-	        data:      { id : employeeID }
+	        data:      { id : employeeID}
 		});
 	}
 
@@ -71,13 +74,43 @@ $(document).on('vclick', '#loginBtn', function() {
 	});
 	
 });
-
-
+/////////////////////////////////////////
+// Toolbar buttons on bottom of pages //
+///////////////////////////////////////
 $(document).on('click', '#newCall', function() {
 	sessionStorage.clear();
 	$.mobile.changePage("#campus", { transition: "none"});
 });
 
+$(document).on("click", "#saveBtn", function () {
+	if (typeof sessionStorage.getItem('locationDesc') == 'undefined') {
+		var locationDesc = '';
+	} else {
+		var locationDesc = sessionStorage.getItem('locationDesc');
+	}
+
+
+	function ajax() {
+	    return $.ajax({
+	        type:     "post",
+	        url:      "inc/SetWO.php",
+	        dataType: "text",
+	        data:      { workerID: localStorage.getItem('id'), locationID: sessionStorage.getItem('locationID'),   
+	        equipment : sessionStorage.getItem('equipment'), issue : sessionStorage.getItem('issue'), 
+	        workOrderID: sessionStorage.getItem('workOrderID'), locationDesc : locationDesc, close : 0}
+		});
+	}
+
+	$.when(ajax()).done(function(woID) {
+		sessionStorage.setItem(workOrderID, woID)
+		$.mobile.changePage("#existing", { transition: "none"});  
+	});
+
+});
+
+////////////////////////////
+// Campus selection page //
+//////////////////////////
 $(document).on('pagebeforeshow', '#campus', function(){   
 
 	function ajax1() {
@@ -119,7 +152,9 @@ $(document).on("pageinit", "#campus", function () {
 
 });
 
-
+//////////////////////////////
+// Building selection page //
+////////////////////////////
 $(document).on("pagebeforeshow", "#building", function () {
 
     var selectedCampus = sessionStorage.getItem('campus');
@@ -165,8 +200,9 @@ $(document).on("pageinit", "#building", function () {
 
 });
 
-
-
+///////////////////////////
+// Floor selection page //
+/////////////////////////
 $(document).on("pagebeforeshow", "#floor", function () {
 
     var selectedBuilding = sessionStorage.getItem('building');
@@ -211,8 +247,9 @@ $(document).on("pageinit", "#floor", function () {
 
 });
 
-
-
+//////////////////////////
+// Unit selection page //
+////////////////////////
 $(document).on("pagebeforeshow", "#unit", function () {
     var selectedBuilding = sessionStorage.getItem('building');
     var selectedCampus = sessionStorage.getItem('campus');
@@ -251,6 +288,10 @@ $(document).on("pageinit", "#unit", function () {
 
 });
 
+
+///////////////////////////////
+// Equipment selection page //
+/////////////////////////////
 $(document).on("pagebeforeshow", "#equipment", function () {
     
     function ajax4() {
@@ -284,6 +325,10 @@ $(document).on("pageinit", "#equipment", function () {
 
 });
 
+
+///////////////////////////
+// Issue selection page //
+/////////////////////////
 $(document).on("pagebeforeshow", "#issue", function () {
     var selectedEquipment = sessionStorage.getItem('equipment');
     function ajax4() {
@@ -316,7 +361,9 @@ $(document).on("pageinit", "#issue", function () {
     });	        
 });
 
-
+//////////////////
+// Review page //
+////////////////
 $(document).on("pagebeforeshow", "#review", function () {
 	if (sessionStorage.getItem("campus") != '') {
     	$('#campusReview').text(sessionStorage.getItem('campus'));
@@ -343,17 +390,15 @@ $(document).on("pagebeforeshow", "#review", function () {
     }else {
 		$('#issueReview').text("Select Issue Type");
 	}
-    if (sessionStorage.getItem("time") != '') {
-    	$('#timeReview').text(sessionStorage.getItem('time') + " mins");     
-	}else {
-		$('#timeReview').text("Select Time");
-	}
 });
 
 $(document).on("click", "#closeCallBtn", function () {
     $.mobile.changePage("#time", { transition: "none"});
 });
 
+//////////////////////////
+// Time slection page ///
+////////////////////////
 $(document).on("pageinit", "#time", function () {
     $('#timeList').on("vclick", ".timeChoice", function (e) {
         e.preventDefault();
@@ -364,10 +409,9 @@ $(document).on("pageinit", "#time", function () {
 	        type:     "post",
 	        url:      "inc/setWO.php",
 	        dataType: "text",
-	        data:      { workerID: localStorage.getItem('id'), close: TRUE, update: FALSE,   
-	        locationID: sessionStorage.getItem('locationID'), equipment: sessionStorage.getItem('equipment'),
-	        issue: sessionStorage.getItem('issue'), time: sessionStorage.getItem('time'),
-	        workOrderID: sessionStorage.getItem('workOrderID') }
+	        data:      { workerID: localStorage.getItem('id'), locationID: sessionStorage.getItem('locationID'), 
+	        equipment: sessionStorage.getItem('equipment'),issue: sessionStorage.getItem('issue'), 
+	        time: sessionStorage.getItem('time'), workOrderID: sessionStorage.getItem('workOrderID'), close: 1}
 		});
 	}
 
@@ -377,45 +421,11 @@ $(document).on("pageinit", "#time", function () {
     });	        
 });
 
-$(document).on("click", "#saveBtn", function () {
-	if (typeof sessionStorage.getItem('locationDesc') == 'undefined') {
-		var locationDesc = '';
-	} else {
-		var locationDesc = sessionStorage.getItem('locationDesc');
-	}
-
-	if (sessionStorage.getItem('equipment') == 'undefined') {
-		var selectedEquipment = '';
-	} else {
-		var selectedEquipment = sessionStorage.getItem('equipment');
-	}
-
-	if (sessionStorage.getItem('issue') == 'undefined') {
-		var selectedIssue = '';
-	} else {
-		var selectedIssue = sessionStorage.getItem('issue');
-	}
-
-	problemDesc = selectedEquipment + " - " + selectedIssue;
 
 
-	function ajax() {
-	    return $.ajax({
-	        type:     "post",
-	        url:      "inc/SetWO.php",
-	        dataType: "text",
-	        data:      { workerID: localStorage.getItem('id'), locationID: sessionStorage.getItem('locationID'),   
-	        locationDesc : locationDesc, problemDesc : problemDesc }
-		});
-	}
-
-	$.when(ajax()).done(function(woID) {
-		sessionStorage.setItem(workOrderID, woID)
-		$.mobile.changePage("#existing", { transition: "none"});  
-	});
-
-});
-
+//////////////////////////
+// Existing calls page //
+////////////////////////
 $(document).on("pagebeforeshow", "#existing", function () {
 	function ajax() {
 	    return $.ajax({
@@ -445,7 +455,6 @@ $(document).on("pagebeforeshow", "#existing", function () {
 	    }  
 	});
 });
-
 
 $(document).on("click", ".woChoice", function () {
 	var chosenWO = JSON.parse(sessionStorage.getItem(this.id));

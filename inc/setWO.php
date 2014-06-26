@@ -5,11 +5,15 @@
 	$workerID = $_POST["workerID"];
     $locationID = $_POST["locationID"];
     $locationDesc = $_POST["locationDesc"];
-    $problemDesc = $_POST["problemDesc"];
+    $equipment = $_POST["equipment"];
+    $issue = $_POST["issue"];
 	$workOrderID = $_POST["workOrderID"];
 	$time = $_POST["time"];
-	$update = $_POST[""];
-	$close = $_POST[""];
+	$close = $_POST["close"];
+
+	$hours = (number_format((float)$time,2))/60;
+	$problemDesc = $equipment . " - " . $issue;
+
 
 
 	// Get current time and date
@@ -17,7 +21,7 @@
 	$date = date('Y-m-d h:i:s');
 	//echo $date;
 
-	if (!empty($workerID)) {
+	if (empty($workOrderID)) {
 
 		//GET Next Work Order Number
 	    $query = "SELECT [WorkOrderNumber].[NextWO] FROM [CMS].[dbo].[WorkOrderNumber]";
@@ -119,19 +123,32 @@
 	          die( print_r( sqlsrv_errors(), true));          
 	    }
 
-	}
+	} else {
+				
+		$query = "UPDATE [CMS].[dbo].[WorkOrder]
+        SET [DateUpdated] = '$date',                  
+            [WORequestComments] = '$problemDesc',                                   
+            [IDWOLocation]='$locationID',              
+            [LocationOther]='$locationDesc'    
+        WHERE [IDWorkOrder]='$workOrderID'" ;
 
-	if ($update) {
+	    $stmt = sqlsrv_query($conn, $query); 
+	    if( $stmt === false ) {
+	          die( print_r( sqlsrv_errors(), true));          
+	    }
 
 	}
 
 	if ($close) {
+
+		$completionComments = "Issue Resolved : " . $equipment . " - " . $issue . "\nWork order generated using quick support logger";
+
 		//UPDATE Existing Work Order
         $query = "UPDATE [CMS].[dbo].[WorkOrder]
         SET [DateUpdated] = '$date',                  
-              [IDWOStatus] = 781,                                   
-              [WODateCompleted]='$date',              
-              [WOCompletionComments]='$completionComments'    
+            [IDWOStatus] = 781,                                   
+            [WODateCompleted]='$date',              
+            [WOCompletionComments]='$completionComments'    
         WHERE [IDWorkOrder]='$workOrderID'" ;
         $stmt = sqlsrv_query($conn, $query);
         if( $stmt === false ) {
@@ -176,7 +193,7 @@
               '$workOrderID',        
               '$workerID',        
               '$startTime',                         
-              '$time',                                           
+              '$hours',                                           
               '$endTime',                         
               0,                                             
               2388,                                          
