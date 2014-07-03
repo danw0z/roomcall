@@ -10,6 +10,10 @@
 		$post_data=json_encode($data);
 	}
 
+	$json_array=json_decode($post_data, true);
+	sort($json_array);
+	$post_data = json_encode($json_array);
+
 	echo $post_data;
  
  

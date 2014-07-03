@@ -7,17 +7,11 @@
 
 	$query = "SELECT [WorkOrder].[IDWorkOrder]
 	  ,[WONumber]
-	  ,[WODescription]
 	  ,[WORequestComments]
+	  ,[Location].[IDLocation]
 	  ,[Location].[HierarchyString] AS 'Location'
 	  ,[LocationOther] AS 'Room'
-	  ,[IDWOStatus]
-	  ,[Status].[HierarchyString] AS 'WO Status'
-	  ,[WODateCompleted]
-	  ,[WOCompletionComments]
-	  ,[WorkOrder].[IDUserCreated]
 	  ,[WorkOrder].[DateCreated]
-	  ,[WorkOrder].[IDUserUpdated]
 	  ,[WorkOrder].[DateUpdated]
 	  FROM [CMS].[dbo].[WorkOrder] LEFT JOIN [CMS].[dbo].[Location] ON [Location].[IDLocation]=[WorkOrder].[IDWOLocation]
 	      LEFT JOIN [CMS].[dbo].[WorkOrderAssignment] ON [WorkOrder].[IDWorkOrder] = [WorkOrderAssignment].[IDWorkOrder]

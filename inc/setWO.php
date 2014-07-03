@@ -7,8 +7,7 @@
     $locationDesc = $_POST["locationDesc"];
     $equipment = $_POST["equipment"];
     $issue = $_POST["issue"];
-	$workOrderID = $_POST["workOrderID"];
-	$time = $_POST["time"];
+	$workOrderID = $_POST["workOrderID"];	
 	$close = $_POST["close"];
 
 	$hours = (number_format((float)$time,2))/60;
@@ -141,6 +140,7 @@
 
 	if ($close) {
 
+		$time = $_POST["time"];
 		$completionComments = "Issue Resolved : " . $equipment . " - " . $issue . "\nWork order generated using quick support logger";
 
 		//UPDATE Existing Work Order

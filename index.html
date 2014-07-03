@@ -42,7 +42,7 @@
   </div><!-- /header -->
 
     <div data-role="content" data-theme="b">
-      <ul data-role="listview" data-inset="true" id="campusList">
+      <ul data-role="listview" data-inset="true" id="campusList" class="ui-listview">
       </ul>
     </div><!-- /content -->
   
@@ -64,13 +64,12 @@
 <div data-role="page" id="building" data-theme="b" class="my-page">
 
   <div data-role="header" data-theme="b" data-position="fixed">
-    <h1>Building List</h1>
+    <h1>Select a Building</h1>
     <a href="#campus" data-icon="arrow-l" class="ui-btn-left">Campus</a>
 	<a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
   </div><!-- /header -->
 
   <div data-role="content" data-theme="b">  
-    <h2>Select a building</h2>
     <ul data-role="listview" data-inset="true" id="bldgList">
     </ul>
   </div><!-- /content -->
@@ -92,13 +91,12 @@
 <div data-role="page" id="floor" data-theme="b" class="my-page">
 
   <div data-role="header" data-theme="b" data-position="fixed">
-    <h1>Floor List</h1>
+    <h1>Select a Floor</h1>
     <a href="#building" data-icon="arrow-l" class="ui-btn-left">Building</a>
   <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
   </div><!-- /header -->
 
   <div data-role="content" data-theme="b">  
-    <h2>Select a Floor</h2>
     <ul data-role="listview" data-inset="true" id="floorList">
     </ul>
   </div><!-- /content -->
@@ -120,13 +118,12 @@
 <div data-role="page" id="unit" data-theme="b" class="my-page">
 
   <div data-role="header" data-theme="b" data-position="fixed">
-    <h1>Unit List</h1>
+    <h1>Select a unit</h1>
     <a href="#building" data-icon="arrow-l" class="ui-btn-left">Building</a>
     <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
   </div><!-- /header -->
 
   <div data-role="content" data-theme="b">  
-    <h2>Select a unit</h2>
     <ul data-role="listview" data-inset="true" id="unitList">
     </ul>
   </div><!-- /content -->
@@ -148,13 +145,12 @@
 <div data-role="page" id="equipment" data-theme="b" class="my-page">
 
   <div data-role="header" data-theme="b" data-position="fixed">
-    <h1>Equipment List</h1>
-    <a href="#unit" data-icon="arrow-l" class="ui-btn-left">Unit</a>
+    <h1>Select Equipment</h1>
+    <a href="#floor" data-icon="arrow-l" class="ui-btn-left">Floor</a>
     <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
   </div><!-- /header -->
 
   <div data-role="content" data-theme="b">  
-    <h2>Select type of equipment</h2>
     <ul data-role="listview" data-inset="true" id="equipmentList">
     </ul>
   </div><!-- /content -->
@@ -177,13 +173,12 @@
 <div data-role="page" id="issue" data-theme="b" class="my-page">
 
   <div data-role="header" data-theme="b" data-position="fixed">
-    <h1>Issues</h1>
+    <h1>Select Issue</h1>
     <a href="#equipment" data-icon="arrow-l" class="ui-btn-left">Equipment</a>
     <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
   </div><!-- /header -->
 
   <div data-role="content" data-theme="b">  
-    <h2>Select type of issue</h2>
     <ul data-role="listview" data-inset="true" id="issueList">
     </ul>
   </div><!-- /content -->
@@ -243,7 +238,7 @@
 <div data-role="page" id="review" data-theme="b" class="my-page">
 
   <div data-role="header" data-theme="b" data-position="fixed">
-    <h1>Time</h1>
+    <h1>Review</h1>
     <a href="#" data-rel="back" data-icon="arrow-l" data-role="button">Go back</a>
     <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
   </div><!-- /header -->
@@ -254,7 +249,7 @@
     <ul data-inset="true" style="padding:10px;">
         <li><a href="#campus" data-role="button" id="campusReview">Select a Campus</a></li>
         <li><a href="#building" data-role="button" id="buildingReview">Select a Building</a></li>
-        <li><a href="#unit" data-role="button" id="unitReview">Select a Unit</a></li>
+        <li><a href="#floor" data-role="button" id="floorReview">Select a Floor</a></li>
         <li><a href="#equipment" data-role="button" id="equipmentReview">Select Equipment type</a></li>
         <li><a href="#issue" data-role="button" id="issueReview">Select Issue type</a></li> 
     </ul>
@@ -328,6 +323,21 @@
     </div>
     <div role="main" class="ui-content center-wrapper">
         <h3 class="ui-title">No user found with that ID. Try again</h3>
+        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">OK</a>
+    </div>
+</div>
+
+
+<!-- Database error Popup -->
+<div id="dbError" data-overlay-theme="b" data-theme="b" class="ui-popup ui-body-a ui-overlay-shadow ui-corner-all">
+    <!-- This popup has its theme explicitly defined via data-theme="b"
+         because it has no parent from which to automatically inherit
+         its theme -->
+    <div data-role="header" data-theme="b">
+    <h1>Error</h1>
+    </div>
+    <div role="main" class="ui-content center-wrapper">
+        <h3 class="ui-title">Cannot access database. Try again later</h3>
         <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" data-transition="flow">OK</a>
     </div>
 </div>

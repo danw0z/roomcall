@@ -1,3 +1,7 @@
 .center-wrapper{
     text-align: center;
 }
+
+.missing{
+	background-color: red !important;
+}

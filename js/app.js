@@ -2,6 +2,7 @@
 $(function() {
     $( "#logout" ).enhanceWithin().popup();
     $( "#noUser" ).enhanceWithin().popup();
+    $( "#dbError" ).enhanceWithin().popup();
 });
 
 // Automatic idle logout. idleWait is how long (ms) to wait before logging someone out.
@@ -9,7 +10,7 @@ $(function () {
     
 	idleTimer = null;
 	idleState = false;
-	idleWait = 60000;
+	idleWait = 600000;
 
         $('*').bind('mousemove keydown scroll', function () {
         
@@ -32,8 +33,15 @@ $(document).on('pagebeforeshow', '#login', function(){
 	localStorage.clear();	
 });
 
-$(document).on('pageshow', '#login', function(){ 
+$(document).on('pageinit', '#login', function(){ 
 	$('#employeeID').focus();
+	$('#employeeID').keyup(function(event){    
+	    if(event.keyCode==13){
+	       $('#loginBtn').trigger("vclick");
+	       console.log("Enter detected")
+	    }
+	});
+
 });
 
 $(document).on('change', '#employeeID', function() {
@@ -43,36 +51,54 @@ $(document).on('change', '#employeeID', function() {
 		var employeeID = badgeID.substr(n-7,6);
 		console.log(employeeID);
 		$('#employeeID').val(employeeID);
-		$('#loginBtn').click();
+		$('#loginBtn').trigger("vclick");
 	}
-
 });
 
 $(document).on('vclick', '#loginBtn', function() {
 	var employeeID = $('#employeeID').val();    
-    function ajax() {
-	    return $.ajax({
-	        type:     "post",
-	        url:      "inc/getUser.php",
-	        dataType: "json",
-	        data:      { id : employeeID}
-		});
-	}
+	if (employeeID != '') {
+	    function ajax() {
+		    return $.ajax({
+		    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
+	            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
+		        type:     "post",
+		        url:      "inc/getUser.php",
+		        dataType: "json",
+		        data:      { id : employeeID}
+			});
+		}
 
-	$.when(ajax()).done(function(user) {
-		if (user.message == 'User not found') {
-			$("#noUser").popup("open");
-		} else {
-			var userInfo = user;
-			//localStorage.setItem('campus', userInfo.campus);
-			//sessionStorage.setItem('campus', userInfo.campus);
-			localStorage.setItem('id', userInfo.IDUser);
-			localStorage.setItem('firstName', userInfo.FirstName);
-			localStorage.setItem('lastName', userInfo.LastName);
-			$.mobile.changePage("#campus", { transition: "none"});	
-		}	
-	});
-	
+		$.when(ajax()).done(function(user) {
+			if (user.message == 'User not found') {
+				$("#noUser").popup("open");
+	        	$( "#noUser" ).popup({
+	        		afterclose: function( event, ui ) {
+	        			$('#employeeID').val('');
+	            		$('#employeeID').focus();
+	        		}
+	        	});	
+
+			} else if (user.message == "Failed to connect to server"){
+				$("#dbError").popup("open");
+				$( "#dbError" ).popup({
+	        		afterclose: function( event, ui ) {
+	        			$('#employeeID').val('');
+	            		$('#employeeID').focus();
+	        		}
+	        	});
+
+			} else {
+				var userInfo = user;
+				//localStorage.setItem('campus', userInfo.campus);
+				//sessionStorage.setItem('campus', userInfo.campus);
+				localStorage.setItem('id', userInfo.IDUser);
+				localStorage.setItem('firstName', userInfo.FirstName);
+				localStorage.setItem('lastName', userInfo.LastName);
+				$.mobile.changePage("#campus", { transition: "none"});	
+			}	
+		});
+	}	
 });
 /////////////////////////////////////////
 // Toolbar buttons on bottom of pages //
@@ -82,6 +108,7 @@ $(document).on('click', '#newCall', function() {
 	$.mobile.changePage("#campus", { transition: "none"});
 });
 
+// Save button
 $(document).on("click", "#saveBtn", function () {
 	if (typeof sessionStorage.getItem('locationDesc') == 'undefined') {
 		var locationDesc = '';
@@ -92,6 +119,8 @@ $(document).on("click", "#saveBtn", function () {
 
 	function ajax() {
 	    return $.ajax({
+	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
+            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
 	        type:     "post",
 	        url:      "inc/SetWO.php",
 	        dataType: "text",
@@ -102,7 +131,7 @@ $(document).on("click", "#saveBtn", function () {
 	}
 
 	$.when(ajax()).done(function(woID) {
-		sessionStorage.setItem(workOrderID, woID)
+		//sessionStorage.setItem(workOrderID, woID)
 		$.mobile.changePage("#existing", { transition: "none"});  
 	});
 
@@ -113,20 +142,22 @@ $(document).on("click", "#saveBtn", function () {
 //////////////////////////
 $(document).on('pagebeforeshow', '#campus', function(){   
 
-	function ajax1() {
+	function ajax() {
 	    return $.ajax({
+	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
+            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
 	        type:     "post",
 	        url:      "inc/getCampuses.php",
 	        dataType: "json"
 		});
 	}
 
-	$.when(ajax1()).done(function(campuses) {
+	$.when(ajax()).done(function(campuses) {
 		var li = ""; 
 	    $('#campusList').empty();
 	    $.each(campuses, function(i, obj) {
 	    	$.each(obj, function(key, campus) {
-	    		li += "<li><a href='#' class='campusChoice' id='" + campus.IDLocation + "'><h2>" + campus.LocationDescription + "</h2></a></li>";
+	    		li += "<li><a href='#' class='campusChoice' id='" + campus.IDLocation + "'><h1>" + campus.LocationDescription + "</h1></a></li>";
 	    	});	       
 	    });    
 
@@ -156,13 +187,17 @@ $(document).on("pageinit", "#campus", function () {
 // Building selection page //
 ////////////////////////////
 $(document).on("pagebeforeshow", "#building", function () {
-
+	if ((sessionStorage.getItem("campus") == null) || (sessionStorage.getItem("campus") == '')) {
+    	 $.mobile.changePage("#campus", { transition: "none"}); 
+    }
     var selectedCampus = sessionStorage.getItem('campus');
     var campusID = sessionStorage.getItem('campusID');
     console.log(selectedCampus + " selected");
     
-    function ajax2() {
+    function ajax() {
 	    return $.ajax({
+	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
+            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
 	        type:     "post",
 	        url:      "inc/getBldgs.php",
 	        dataType: "json",
@@ -170,7 +205,7 @@ $(document).on("pagebeforeshow", "#building", function () {
 		});
 	}
 
-	$.when(ajax2()).done(function(buildings) {
+	$.when(ajax()).done(function(buildings) {
 		var li = ""; 
 	    $('#bldgList').empty();
 	    $.each(buildings, function(i, obj) {
@@ -204,13 +239,17 @@ $(document).on("pageinit", "#building", function () {
 // Floor selection page //
 /////////////////////////
 $(document).on("pagebeforeshow", "#floor", function () {
-
+	if ((sessionStorage.getItem("building") == null) || (sessionStorage.getItem("building") == '')) {
+    	 $.mobile.changePage("#building", { transition: "none"}); 
+    }
     var selectedBuilding = sessionStorage.getItem('building');
     var BuildingID = sessionStorage.getItem('buildingID');
     console.log(selectedBuilding + " selected");
     
-    function ajax2() {
+    function ajax() {
 	    return $.ajax({
+	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
+            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
 	        type:     "post",
 	        url:      "inc/getFloors.php",
 	        dataType: "json",
@@ -218,7 +257,7 @@ $(document).on("pagebeforeshow", "#floor", function () {
 		});
 	}
 
-	$.when(ajax2()).done(function(floors) {
+	$.when(ajax()).done(function(floors) {
 		var li = ""; 
 	    $('#floorList').empty();
 	    $.each(floors, function(i, obj) {
@@ -255,8 +294,10 @@ $(document).on("pagebeforeshow", "#unit", function () {
     var selectedCampus = sessionStorage.getItem('campus');
     console.log(selectedCampus + " building " + selectedBuilding + " selected");
     
-    function ajax3() {
+    function ajax() {
 	    return $.ajax({
+	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
+            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
 	        type:     "post",
 	        url:      "inc/getUnitsJSON.php",
 	        dataType: "json",
@@ -264,7 +305,7 @@ $(document).on("pagebeforeshow", "#unit", function () {
 		});
 	}
 
-	$.when(ajax3()).done(function(units) {
+	$.when(ajax()).done(function(units) {
 		var li = ""; 
 	    $("#unitList").empty();
 	    $.each(units, function(i, row) {
@@ -294,15 +335,17 @@ $(document).on("pageinit", "#unit", function () {
 /////////////////////////////
 $(document).on("pagebeforeshow", "#equipment", function () {
     
-    function ajax4() {
+    function ajax() {
 	    return $.ajax({
+	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
+            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
 	        type:     "post",
 	        url:      "inc/getequipmentJSON.php",
 	        dataType: "json"
 		});
 	}
 
-	$.when(ajax4()).done(function(equipment) {
+	$.when(ajax()).done(function(equipment) {
 		var li = ""; 
 	    $("#equipmentList").empty();
 	    $.each(equipment, function(i, row) {
@@ -330,17 +373,21 @@ $(document).on("pageinit", "#equipment", function () {
 // Issue selection page //
 /////////////////////////
 $(document).on("pagebeforeshow", "#issue", function () {
-    var selectedEquipment = sessionStorage.getItem('equipment');
-    function ajax4() {
+	if ((sessionStorage.getItem("equipment") == null) || (sessionStorage.getItem("equipment") == '')) {
+    	 $.mobile.changePage("#equipment", { transition: "none"}); 
+    }
+    function ajax() {
 	    return $.ajax({
+	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
+            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
 	        type:     "post",
 	        url:      "inc/getissueJSON.php",
 	        dataType: "json",
-	        data:      { equipment : selectedEquipment }
+	        data:      { equipment : sessionStorage.getItem('equipment') }
 		});
 	}
 
-	$.when(ajax4()).done(function(issue) {
+	$.when(ajax()).done(function(issue) {
 		var li = ""; 
 	    $("#issueList").empty();
 	    $.each(issue, function(i, row) {
@@ -365,30 +412,30 @@ $(document).on("pageinit", "#issue", function () {
 // Review page //
 ////////////////
 $(document).on("pagebeforeshow", "#review", function () {
-	if (sessionStorage.getItem("campus") != '') {
-    	$('#campusReview').text(sessionStorage.getItem('campus'));
+	if ((sessionStorage.getItem("campus") != null) && (sessionStorage.getItem("campus") != '')) {
+    	$('#campusReview').text(sessionStorage.getItem('campus')).removeClass("missing");
 	}else {
-		$('#campusReview').text("Select a Campus");
+		$('#campusReview').text("Select a Campus").addClass("missing");
 	}
-	if (sessionStorage.getItem("building") != '') {
-    	$('#buildingReview').text(sessionStorage.getItem('building')); 
+	if ((sessionStorage.getItem("building") != null) && (sessionStorage.getItem("building") != '')) {
+    	$('#buildingReview').text(sessionStorage.getItem('building')).removeClass("missing");
     }else {
-		$('#buildingReview').text("Select a Building");
+		$('#buildingReview').text("Select a Building").addClass("missing");
 	}
-    if (sessionStorage.getItem("unit") != '') {
-    	$('#unitReview').text(sessionStorage.getItem('unit')); 
+    if ((sessionStorage.getItem("floor") != null) && (sessionStorage.getItem("floor") != '')) {
+    	$('#floorReview').text(sessionStorage.getItem('floor')).removeClass("missing"); 
 	}else {
-		$('#unitReview').text("Select a Unit");
+		$('#floorReview').text("Select a Floor").addClass("missing");
 	}
-	if (sessionStorage.getItem("equipment") != '') {
-    	$('#equipmentReview').text(sessionStorage.getItem('equipment')); 
+	if ((sessionStorage.getItem("equipment") != null) && (sessionStorage.getItem("equipment") != '')) {
+    	$('#equipmentReview').text(sessionStorage.getItem('equipment')).removeClass("missing");
     }else {
-		$('#equipmentReview').text("Select Equipment Type");
+		$('#equipmentReview').text("Select Equipment Type").addClass("missing");
 	}
-    if (sessionStorage.getItem("issue") != '') {
-    	$('#issueReview').text(sessionStorage.getItem('issue')); 
+    if ((sessionStorage.getItem("issue") != null) && (sessionStorage.getItem("issue") != '')) {
+    	$('#issueReview').text(sessionStorage.getItem('issue')).removeClass("missing");
     }else {
-		$('#issueReview').text("Select Issue Type");
+		$('#issueReview').text("Select Issue Type").addClass("missing");
 	}
 });
 
@@ -406,6 +453,8 @@ $(document).on("pageinit", "#time", function () {
 
         function ajax() {
 	    return $.ajax({
+	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
+            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
 	        type:     "post",
 	        url:      "inc/setWO.php",
 	        dataType: "text",
@@ -429,6 +478,8 @@ $(document).on("pageinit", "#time", function () {
 $(document).on("pagebeforeshow", "#existing", function () {
 	function ajax() {
 	    return $.ajax({
+	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
+            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
 	        type:     "post",
 	        url:      "inc/getWO.php",
 	        dataType: "json",
@@ -446,7 +497,18 @@ $(document).on("pagebeforeshow", "#existing", function () {
 	    	$.each(woInfo, function(i, obj) {
 	    		$.each(obj, function(key, wo) {
 	    			sessionStorage.setItem('WO#' + wo.WONumber, JSON.stringify(wo));
-				li += "<li><a href='#' class='woChoice' id='WO#"+wo.WONumber+"'><h2>WO #: " + wo.WONumber + "</h2><p>Date: " + wo.DateCreated.date + "<p>Location: " + wo.Location +"</p></a></li>";
+	    			var dateCreated = new Date(wo.DateCreated.date);
+	    			var day = dateCreated.getDate();
+	    			var month = dateCreated.getMonth()+1;
+					var year = dateCreated.getFullYear();
+					var hour = dateCreated.getHours();
+					var min = dateCreated.getMinutes();
+	    			var date=month + "/" + day + "/" + year + "  " + hour + ":" + min;
+				li += "<li><a href='#' class='woChoice' id='WO#"+wo.WONumber+"'>" +
+						"<h2>" + wo.WORequestComments + "</h2>" +
+						"<p>Date: " + date + "</br> Location: " + wo.Location + "</p>" +
+						"<p class='ui-li-aside'>WO: " + wo.WONumber +"</p>" +
+						"</a></li>";
 		    	});	       
 		    }); 
  
@@ -458,16 +520,21 @@ $(document).on("pagebeforeshow", "#existing", function () {
 
 $(document).on("click", ".woChoice", function () {
 	var chosenWO = JSON.parse(sessionStorage.getItem(this.id));
-	//var problem = chosenWO.problem.split(" - ");
-	console.log(problem);
-	sessionStorage.setItem('campus', chosenWO.campus);
-	sessionStorage.setItem('building', chosenWO.building);
-	sessionStorage.setItem('unit', chosenWO.unit);
-	sessionStorage.setItem('equipment', problem[0]);
-	sessionStorage.setItem('issue', problem[1]);
-	sessionStorage.setItem('time', chosenWO.time);
-	sessionStorage.setItem('index', chosenWO.index);
+	if (chosenWO.WORequestComments != null) {
+		var problem = chosenWO.WORequestComments.split(" - ");
+		sessionStorage.setItem('equipment', problem[0]);
+		sessionStorage.setItem('issue', problem[1]);
+	}
 
+	if (chosenWO.Location != null) {
+		var location = chosenWO.Location.split(" - ");
+		sessionStorage.setItem('campus', location[0]);
+		sessionStorage.setItem('building', location[1]);
+	}
+	
+	sessionStorage.setItem('locationID', chosenWO.IDLocation);
+	sessionStorage.setItem('workOrderID', chosenWO.IDWorkOrder);
+	
 	$.mobile.changePage("#review", { transition: "none"});
 
 });

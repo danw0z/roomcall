@@ -1,10 +1,12 @@
 /* A bit custom styling */
 .my-page .ui-listview li .ui-btn p {
-    color: #c0c0c0;
+    color: #FFFFFF;
 }
 .my-page .ui-listview li .ui-btn .ui-li-aside {
     color: #eee;
+    background: #2ad;
 }
+
 /* First breakpoint is 48em (768px). 3 column layout. Tiles 250x250 pixels incl. margin at the breakpoint. */
 @media ( min-width: 48em ) {
     .my-page .ui-content {
@@ -40,6 +42,7 @@
         display: none;
     }
     /* Make text wrap. */
+    .my-page .ui-listview h1,
     .my-page .ui-listview h2,
     .my-page .ui-listview p {
         white-space: normal;
@@ -49,11 +52,19 @@
         right: 0;
     }
     /* Text position */
-    .my-page .ui-listview h2 {
+    .my-page .ui-listview h1 {
         font-size: 1.25em;
         margin: 0;
         padding: .125em 1em;
-        bottom: 50%;
+        bottom: 45%;
+        text-align: center;
+    }
+    .my-page .ui-listview h2 {
+        font-size: 1.1em;
+        margin: 0;
+        padding: .125em 1em;
+        bottom: 55%;
+        text-align: center;
     }
     .my-page .ui-listview p {
         font-size: 1em;
@@ -61,6 +72,7 @@
         padding: 0 1.25em;
         min-height: 50%;
         bottom: 0;
+        text-align: center;
     }
     /* Semi transparent background and different position if there is a thumb. The button has overflow hidden so we don't need to set border-radius. */
     .ui-listview .ui-li-has-thumb h2,
@@ -132,5 +144,6 @@
         height: 200px;
         margin: .625em 1%;
     }
+
 }
 /* For this demo we used images with a size of 310x310 pixels. Just before the second breakpoint the images reach their max width: 1019px - 2 x 9px padding = 1001px x 30.9333% = ~310px */

@@ -2,12 +2,22 @@
 	"equipment": [	
 	{
 		"device": "Anesthesia Machine",
-		"issue": [ "Leak", "Flow Sensors", "User Error", "Vaporizer"]
+		"issue": [ "Leak", "Flow Sensors", "User Error", "Vaporizer", "Absorber", "Jet Vent", "Move", "O2 Sensor", "O2 Tank", "Other"]
 	},
 
 	{
 		"device": "Patient Monitor",
-		"issue": [ "Power", "Touch Screen", "Settings", "User Error"]
+		"issue": [ "Power", "Touch Screen", "Settings", "User Error", "Other"]
+	},
+
+	{
+		"device": "PDM",
+		"issue": [ "", "", "User Error", "Other"]
+	},
+
+	{
+		"device": "Gas Module",
+		"issue": [ "", "", "User Error", "Other"]
 	},
 
 	{
@@ -18,7 +28,35 @@
 	{
 		"device": "Patient Cables",
 		"issue": [ "IBP", "NIBP", "SpO2", "ECG", "Temperature", "Cardiac Output"]
+	},
+
+	{
+		"device": "ARKS",
+		"issue": [ "Touch Screen", "Monitor", "Network", "Keyboard", "User Error"]
+	},
+
+	{
+		"device": "Telemetry",
+		"issue": [ "Bad Tele Box", "ECG Cables", "SpO2 Cable", "Battery"]
+	},
+
+	{
+		"device": "Ultrasound",
+		"issue": [ "Probe", "Settings", "Power", "Printer", "Wireless"]
+	},
+
+	{
+		"device": "Phone",
+		"issue": [ "Replaced", "Handset", "Cable", "Other"]
+	},
+
+	{
+		"device": "ESU",
+		"issue": [ "Hand Piece", "Return Pad", "Footswitch", "User Error", "Other"]
 	}
+
+
+
 			
 	]
 }
