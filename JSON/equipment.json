@@ -12,12 +12,12 @@
 
 	{
 		"device": "PDM",
-		"issue": [ "", "", "User Error", "Other"]
+		"issue": ["Replaced", "User Error", "Other"]
 	},
 
 	{
 		"device": "Gas Module",
-		"issue": [ "", "", "User Error", "Other"]
+		"issue": [ "Reset", "Dfend", "User Error", "Other"]
 	},
 
 	{
@@ -27,7 +27,7 @@
 
 	{
 		"device": "Patient Cables",
-		"issue": [ "IBP", "NIBP", "SpO2", "ECG", "Temperature", "Cardiac Output"]
+		"issue": [ "IBP", "NIBP", "SpO2", "ECG", "Temperature", "Cardiac Output", "Transducer"]
 	},
 
 	{

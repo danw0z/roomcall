@@ -5,3 +5,8 @@
 .missing{
 	background-color: red !important;
 }
+
+
+li, li li, li li li {
+    list-style-type: none;
+}

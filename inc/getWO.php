@@ -22,10 +22,10 @@
 	$data = array(); 
 
     while($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-
-     $data[] = array($obj); 
-     $post_data = json_encode($data);
+    $data[] = array($obj); 
     }
+    
+    $post_data = json_encode($data);
     echo $post_data;
 
 

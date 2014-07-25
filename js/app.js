@@ -3,6 +3,8 @@ $(function() {
     $( "#logout" ).enhanceWithin().popup();
     $( "#noUser" ).enhanceWithin().popup();
     $( "#dbError" ).enhanceWithin().popup();
+    $( "#noOpenWO" ).enhanceWithin().popup();
+    $( "#missingInfo" ).enhanceWithin().popup();
 });
 
 // Automatic idle logout. idleWait is how long (ms) to wait before logging someone out.
@@ -10,7 +12,7 @@ $(function () {
     
 	idleTimer = null;
 	idleState = false;
-	idleWait = 600000;
+	idleWait = 10000;
 
         $('*').bind('mousemove keydown scroll', function () {
         
@@ -30,11 +32,15 @@ $(function () {
 $(document).on('pagebeforeshow', '#login', function(){ 
 	$('#employeeID').val('');
 	sessionStorage.clear();
-	localStorage.clear();	
+	localStorage.clear();
+	$('#employeeID').focus();	
 });
 
-$(document).on('pageinit', '#login', function(){ 
-	$('#employeeID').focus();
+$(document).on('focusout', '#employeeID', function(){ 
+	$('#employeeID').focus();	
+});
+
+$(document).on('pagecreate', '#login', function(){ 
 	$('#employeeID').keyup(function(event){    
 	    if(event.keyCode==13){
 	       $('#loginBtn').trigger("vclick");
@@ -44,7 +50,7 @@ $(document).on('pageinit', '#login', function(){
 
 });
 
-$(document).on('change', '#employeeID', function() {
+$(document).on('input', '#employeeID', function() {
 	var badgeID = $('#employeeID').val();
 	var n = badgeID.length;
 	if (badgeID.charAt(n-1) == '?') {
@@ -168,7 +174,7 @@ $(document).on('pagebeforeshow', '#campus', function(){
 
 });
 
-$(document).on("pageinit", "#campus", function () {
+$(document).on("pagecreate", "#campus", function () {
        
     $('#campusList').on("vclick", ".campusChoice", function (e) {
         e.preventDefault();
@@ -221,7 +227,7 @@ $(document).on("pagebeforeshow", "#building", function () {
 
 });
 
-$(document).on("pageinit", "#building", function () {
+$(document).on("pagecreate", "#building", function () {
        
     $('#bldgList').on("vclick", ".bldgChoice", function (e) {
         e.preventDefault();
@@ -273,7 +279,7 @@ $(document).on("pagebeforeshow", "#floor", function () {
 
 });
 
-$(document).on("pageinit", "#floor", function () {
+$(document).on("pagecreate", "#floor", function () {
        
     $('#floorList').on("vclick", ".floorChoice", function (e) {
         e.preventDefault();
@@ -318,7 +324,7 @@ $(document).on("pagebeforeshow", "#unit", function () {
 
 });
 
-$(document).on("pageinit", "#unit", function () {
+$(document).on("pagecreate", "#unit", function () {
     var selectedBuilding = sessionStorage.getItem('building');
     var selectedCampus = sessionStorage.getItem('campus');  
     $('#unitList').on("vclick", ".unitChoice", function (e) {
@@ -358,7 +364,7 @@ $(document).on("pagebeforeshow", "#equipment", function () {
 
 });
 
-$(document).on("pageinit", "#equipment", function () {
+$(document).on("pagecreate", "#equipment", function () {
     $('#equipmentList').on("vclick", ".equipmentChoice", function (e) {
         e.preventDefault();
         sessionStorage.setItem('equipment', this.id);
@@ -400,7 +406,7 @@ $(document).on("pagebeforeshow", "#issue", function () {
 
 });
 
-$(document).on("pageinit", "#issue", function () {
+$(document).on("pagecreate", "#issue", function () {
     $('#issueList').on("vclick", ".issueChoice", function (e) {
         e.preventDefault();
         sessionStorage.setItem('issue', this.id);
@@ -417,12 +423,12 @@ $(document).on("pagebeforeshow", "#review", function () {
 	}else {
 		$('#campusReview').text("Select a Campus").addClass("missing");
 	}
-	if ((sessionStorage.getItem("building") != null) && (sessionStorage.getItem("building") != '')) {
+	if ((sessionStorage.getItem("building") != null) && (sessionStorage.getItem("building") != '') && (sessionStorage.getItem("building") != 'undefined')) {
     	$('#buildingReview').text(sessionStorage.getItem('building')).removeClass("missing");
     }else {
 		$('#buildingReview').text("Select a Building").addClass("missing");
 	}
-    if ((sessionStorage.getItem("floor") != null) && (sessionStorage.getItem("floor") != '')) {
+    if ((sessionStorage.getItem("floor") != null) && (sessionStorage.getItem("floor") != '') && (sessionStorage.getItem("floor") != 'undefined')) {
     	$('#floorReview').text(sessionStorage.getItem('floor')).removeClass("missing"); 
 	}else {
 		$('#floorReview').text("Select a Floor").addClass("missing");
@@ -440,13 +446,17 @@ $(document).on("pagebeforeshow", "#review", function () {
 });
 
 $(document).on("click", "#closeCallBtn", function () {
+	if ($("#reviewList a").hasClass("missing")) {
+		$("#missingInfo").popup("open");
+	} else {
     $.mobile.changePage("#time", { transition: "none"});
+	}
 });
 
 //////////////////////////
 // Time slection page ///
 ////////////////////////
-$(document).on("pageinit", "#time", function () {
+$(document).on("pagecreate", "#time", function () {
     $('#timeList').on("vclick", ".timeChoice", function (e) {
         e.preventDefault();
         sessionStorage.setItem('time', this.id);
@@ -476,6 +486,7 @@ $(document).on("pageinit", "#time", function () {
 // Existing calls page //
 ////////////////////////
 $(document).on("pagebeforeshow", "#existing", function () {
+	$("#woList").empty();
 	function ajax() {
 	    return $.ajax({
 	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
@@ -490,14 +501,20 @@ $(document).on("pagebeforeshow", "#existing", function () {
 	$.when(ajax()).done(function(wo) {
 		var li = ""; 
 		var woInfo = wo;
-	    $("#woList").empty();
-	    if (woInfo == ''){
-	    	alert("No Open Room calls")
+	    if ((woInfo == '') || woInfo == null){
+	    	$("#noOpenWO").popup("open");
+	    	$( "#noOpenWO" ).popup({
+	        		afterclose: function( event, ui ) {
+	        			$.mobile.changePage("#campus", { transition: "none"});
+	        		}
+	        	});	
+	    	
 	    } else {
 	    	$.each(woInfo, function(i, obj) {
 	    		$.each(obj, function(key, wo) {
 	    			sessionStorage.setItem('WO#' + wo.WONumber, JSON.stringify(wo));
-	    			var dateCreated = new Date(wo.DateCreated.date);
+	    			var DateCreated = wo.DateCreated.date.replace(/-/g, "/");
+	    			var dateCreated = new Date(DateCreated);
 	    			var day = dateCreated.getDate();
 	    			var month = dateCreated.getMonth()+1;
 					var year = dateCreated.getFullYear();
@@ -530,6 +547,7 @@ $(document).on("click", ".woChoice", function () {
 		var location = chosenWO.Location.split(" - ");
 		sessionStorage.setItem('campus', location[0]);
 		sessionStorage.setItem('building', location[1]);
+		sessionStorage.setItem('floor', location[2]);
 	}
 	
 	sessionStorage.setItem('locationID', chosenWO.IDLocation);
