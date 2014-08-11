@@ -1,4 +1,4 @@
-// Instantiate the popup on DOMReady, and enhance its contents
+// Enable the popup messages
 $(function() {
     $( "#logout" ).enhanceWithin().popup();
     $( "#noUser" ).enhanceWithin().popup();
@@ -12,9 +12,9 @@ $(function () {
     
 	idleTimer = null;
 	idleState = false;
-	idleWait = 10000;
+	idleWait = 15000;
 
-        $('*').bind('mousemove keydown scroll', function () {
+        $(document).on('mousemove keydown scroll click ontouchmove', function () {
         
             clearTimeout(idleTimer);
             idleState = false;
@@ -29,21 +29,24 @@ $(function () {
 ///////////////////////
 ///// Login page /////
 /////////////////////
-$(document).on('pagebeforeshow', '#login', function(){ 
-	$('#employeeID').val('');
+$(document).on('pagebeforeshow', '#login', function(){
+	// Before page is shown: Clear all saved data and clear and focus on the Employee ID box 
 	sessionStorage.clear();
 	localStorage.clear();
+	$('#employeeID').val('');
 	$('#employeeID').focus();	
 });
 
 $(document).on('focusout', '#employeeID', function(){ 
+	// Always keep focus on the Employee ID box
 	$('#employeeID').focus();	
 });
 
 $(document).on('pagecreate', '#login', function(){ 
+	// Detect when Enter is pressed and simulate that the login button was pressed
 	$('#employeeID').keyup(function(event){    
 	    if(event.keyCode==13){
-	       $('#loginBtn').trigger("vclick");
+	       $('#loginBtn').trigger("click");
 	       console.log("Enter detected")
 	    }
 	});
@@ -51,17 +54,20 @@ $(document).on('pagecreate', '#login', function(){
 });
 
 $(document).on('input', '#employeeID', function() {
+	// Used to detect if a badge was swiped by checking if the last value of the text is a "?"
+	// The 6 digits prior to the "?" is then saved as the employee ID
 	var badgeID = $('#employeeID').val();
 	var n = badgeID.length;
 	if (badgeID.charAt(n-1) == '?') {
 		var employeeID = badgeID.substr(n-7,6);
 		console.log(employeeID);
 		$('#employeeID').val(employeeID);
-		$('#loginBtn').trigger("vclick");
+		$('#loginBtn').trigger("click");
 	}
 });
 
-$(document).on('vclick', '#loginBtn', function() {
+// Send the employee ID to the server to check the database for a match
+$(document).on('click', '#loginBtn', function() {
 	var employeeID = $('#employeeID').val();    
 	if (employeeID != '') {
 	    function ajax() {
@@ -76,6 +82,8 @@ $(document).on('vclick', '#loginBtn', function() {
 		}
 
 		$.when(ajax()).done(function(user) {
+
+			// Employee ID not found in database
 			if (user.message == 'User not found') {
 				$("#noUser").popup("open");
 	        	$( "#noUser" ).popup({
@@ -85,6 +93,7 @@ $(document).on('vclick', '#loginBtn', function() {
 	        		}
 	        	});	
 
+        	// Server connection was unsuccessful
 			} else if (user.message == "Failed to connect to server"){
 				$("#dbError").popup("open");
 				$( "#dbError" ).popup({
@@ -94,6 +103,7 @@ $(document).on('vclick', '#loginBtn', function() {
 	        		}
 	        	});
 
+			// User found - save returned info to local storage
 			} else {
 				var userInfo = user;
 				//localStorage.setItem('campus', userInfo.campus);
@@ -109,39 +119,14 @@ $(document).on('vclick', '#loginBtn', function() {
 /////////////////////////////////////////
 // Toolbar buttons on bottom of pages //
 ///////////////////////////////////////
+
+// New call button to clear all current call info and take you to campus select screen
 $(document).on('click', '#newCall', function() {
 	sessionStorage.clear();
 	$.mobile.changePage("#campus", { transition: "none"});
 });
 
-// Save button
-$(document).on("click", "#saveBtn", function () {
-	if (typeof sessionStorage.getItem('locationDesc') == 'undefined') {
-		var locationDesc = '';
-	} else {
-		var locationDesc = sessionStorage.getItem('locationDesc');
-	}
 
-
-	function ajax() {
-	    return $.ajax({
-	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
-            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
-	        type:     "post",
-	        url:      "inc/SetWO.php",
-	        dataType: "text",
-	        data:      { workerID: localStorage.getItem('id'), locationID: sessionStorage.getItem('locationID'),   
-	        equipment : sessionStorage.getItem('equipment'), issue : sessionStorage.getItem('issue'), 
-	        workOrderID: sessionStorage.getItem('workOrderID'), locationDesc : locationDesc, close : 0}
-		});
-	}
-
-	$.when(ajax()).done(function(woID) {
-		//sessionStorage.setItem(workOrderID, woID)
-		$.mobile.changePage("#existing", { transition: "none"});  
-	});
-
-});
 
 ////////////////////////////
 // Campus selection page //
@@ -176,7 +161,7 @@ $(document).on('pagebeforeshow', '#campus', function(){
 
 $(document).on("pagecreate", "#campus", function () {
        
-    $('#campusList').on("vclick", ".campusChoice", function (e) {
+    $('#campusList').on("click", ".campusChoice", function (e) {
         e.preventDefault();
         sessionStorage.setItem('campus', this.text);
         sessionStorage.setItem('campusID', this.id);
@@ -229,7 +214,7 @@ $(document).on("pagebeforeshow", "#building", function () {
 
 $(document).on("pagecreate", "#building", function () {
        
-    $('#bldgList').on("vclick", ".bldgChoice", function (e) {
+    $('#bldgList').on("click", ".bldgChoice", function (e) {
         e.preventDefault();
         sessionStorage.setItem('building', this.text);
         sessionStorage.setItem('buildingID', this.id);
@@ -281,7 +266,7 @@ $(document).on("pagebeforeshow", "#floor", function () {
 
 $(document).on("pagecreate", "#floor", function () {
        
-    $('#floorList').on("vclick", ".floorChoice", function (e) {
+    $('#floorList').on("click", ".floorChoice", function (e) {
         e.preventDefault();
         sessionStorage.setItem('floor', this.text);
         sessionStorage.setItem('floorID', this.id);
@@ -327,7 +312,7 @@ $(document).on("pagebeforeshow", "#unit", function () {
 $(document).on("pagecreate", "#unit", function () {
     var selectedBuilding = sessionStorage.getItem('building');
     var selectedCampus = sessionStorage.getItem('campus');  
-    $('#unitList').on("vclick", ".unitChoice", function (e) {
+    $('#unitList').on("click", ".unitChoice", function (e) {
         e.preventDefault();
         sessionStorage.setItem('unit', this.id);
         $.mobile.changePage("#equipment", { transition: "none"});   
@@ -365,7 +350,7 @@ $(document).on("pagebeforeshow", "#equipment", function () {
 });
 
 $(document).on("pagecreate", "#equipment", function () {
-    $('#equipmentList').on("vclick", ".equipmentChoice", function (e) {
+    $('#equipmentList').on("click", ".equipmentChoice", function (e) {
         e.preventDefault();
         sessionStorage.setItem('equipment', this.id);
         sessionStorage.removeItem('issue');
@@ -407,7 +392,7 @@ $(document).on("pagebeforeshow", "#issue", function () {
 });
 
 $(document).on("pagecreate", "#issue", function () {
-    $('#issueList').on("vclick", ".issueChoice", function (e) {
+    $('#issueList').on("click", ".issueChoice", function (e) {
         e.preventDefault();
         sessionStorage.setItem('issue', this.id);
         $.mobile.changePage("#review", { transition: "none"});   
@@ -445,6 +430,7 @@ $(document).on("pagebeforeshow", "#review", function () {
 	}
 });
 
+//Close call button
 $(document).on("click", "#closeCallBtn", function () {
 	if ($("#reviewList a").hasClass("missing")) {
 		$("#missingInfo").popup("open");
@@ -453,11 +439,41 @@ $(document).on("click", "#closeCallBtn", function () {
 	}
 });
 
+
+// Save call button
+$(document).on("click", "#saveBtn", function () {
+	if (typeof sessionStorage.getItem('locationDesc') == 'undefined') {
+		var locationDesc = '';
+	} else {
+		var locationDesc = sessionStorage.getItem('locationDesc');
+	}
+
+
+	function ajax() {
+	    return $.ajax({
+	    	beforeSend: function() { $.mobile.loading('show'); }, //Show spinner
+            complete: function() { $.mobile.loading('hide'); }, //Hide spinner
+	        type:     "post",
+	        url:      "inc/SetWO.php",
+	        dataType: "text",
+	        data:      { workerID: localStorage.getItem('id'), locationID: sessionStorage.getItem('locationID'),   
+	        equipment : sessionStorage.getItem('equipment'), issue : sessionStorage.getItem('issue'), 
+	        workOrderID: sessionStorage.getItem('workOrderID'), locationDesc : locationDesc, close : 0}
+		});
+	}
+
+	$.when(ajax()).done(function(woID) {
+		//sessionStorage.setItem(workOrderID, woID)
+		$.mobile.changePage("#existing", { transition: "none"});  
+	});
+
+});
+
 //////////////////////////
 // Time slection page ///
 ////////////////////////
 $(document).on("pagecreate", "#time", function () {
-    $('#timeList').on("vclick", ".timeChoice", function (e) {
+    $('#timeList').on("click", ".timeChoice", function (e) {
         e.preventDefault();
         sessionStorage.setItem('time', this.id);
 
@@ -475,7 +491,8 @@ $(document).on("pagecreate", "#time", function () {
 	}
 
 		$.when(ajax()).done(function(units) {
-			$.mobile.changePage("#existing", { transition: "none"});  
+			sessionStorage.clear();
+			$.mobile.changePage("#campus", { transition: "none"});  
 		});   
     });	        
 });

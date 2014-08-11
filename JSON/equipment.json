@@ -2,7 +2,7 @@
 	"equipment": [	
 	{
 		"device": "Anesthesia Machine",
-		"issue": [ "Leak", "Flow Sensors", "User Error", "Vaporizer", "Absorber", "Jet Vent", "Move", "O2 Sensor", "O2 Tank", "Other"]
+		"issue": [ "Leak", "Bellows", "Flow Sensors", "User Error", "Vaporizer", "Absorber", "Jet Vent", "Move", "O2 Sensor", "O2 Tank", "Other"]
 	},
 
 	{

@@ -4,12 +4,6 @@
 
 - Take a friend?
 
-- Write new W/O
-	- Create and close W/O
-	- Save an open W/O
-	- Modify existing W/O
-	- Modify and close W/O
+- Add Campus to user profile - Could then skip campus selection
 
-- Equipment and issue type
-	- JSON?
-	- New table in database?
+- 

@@ -4,6 +4,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <link rel="apple-touch-icon" href="apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-startup-image" href="apple-touch-startup-image-320x460.png" />
+  <link rel="apple-touch-startup-image" sizes="768x1004" href="apple-touch-startup-image-768x1004.png" />
   <title>CCF Room Call</title> 
   <link rel="stylesheet" href="css/jquery.mobile-1.4.2.min.css" />
   <link rel="stylesheet" href="css/grid-listview.css">
@@ -36,7 +43,7 @@
 <div data-role="page" id="campus" data-theme="b" class="my-page" class="ui-state-persist">
 
   <div data-role="header" data-theme="b" data-position="fixed" >
-    <h1>Select a Campus</h1>
+    <h1>Select Campus</h1>
     <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
 
   </div><!-- /header -->
@@ -62,7 +69,7 @@
 <div data-role="page" id="building" data-theme="b" class="my-page">
 
   <div data-role="header" data-theme="b" data-position="fixed">
-    <h1>Select a Building</h1>
+    <h1>Select Building</h1>
     <a href="#campus" data-icon="arrow-l" class="ui-btn-left">Campus</a>
 	<a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
   </div><!-- /header -->
@@ -89,7 +96,7 @@
 <div data-role="page" id="floor" data-theme="b" class="my-page">
 
   <div data-role="header" data-theme="b" data-position="fixed">
-    <h1>Select a Floor</h1>
+    <h1>Select Floor</h1>
     <a href="#building" data-icon="arrow-l" class="ui-btn-left">Building</a>
   <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
   </div><!-- /header -->
@@ -116,7 +123,7 @@
 <div data-role="page" id="unit" data-theme="b" class="my-page">
 
   <div data-role="header" data-theme="b" data-position="fixed">
-    <h1>Select a unit</h1>
+    <h1>Select Unit</h1>
     <a href="#building" data-icon="arrow-l" class="ui-btn-left">Building</a>
     <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
   </div><!-- /header -->
@@ -203,7 +210,7 @@
   </div><!-- /header -->
 
   <div data-role="content" data-theme="b">  
-    <h2>Select length of call (mins)</h2>
+    <h2>Select call length (mins)</h2>
     <ul data-role="listview" data-inset="true" id="timeList">
     	<li><a href='#' class='timeChoice' id="5"><h2>5</h2></a></li>
     	<li><a href='#' class='timeChoice' id="10"><h2>10</h2></a></li>
@@ -233,7 +240,7 @@
 <div data-role="page" id="review" data-theme="b" class="my-page">
 
   <div data-role="header" data-theme="b" data-position="fixed">
-    <h1>Review call information</h1>
+    <h1>Review call</h1>
     <a href="#" data-rel="back" data-icon="arrow-l" data-role="button">Go back</a>
     <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
   </div><!-- /header -->
@@ -250,10 +257,10 @@
 
     <div class="ui-grid-a">
       <div class="ui-block-a">
-        <a href="#" id='saveBtn' data-role="button" class="ui-btn-active">Save Room Call</a>
+        <a href="#" id='saveBtn' data-role="button" class="ui-btn-active">Save Call</a>
       </div>
       <div  class="ui-btn-active ui-block-b">
-        <a href="#" id='closeCallBtn' data-role="button" class="ui-btn-active">Close Room Call</a>
+        <a href="#" id='closeCallBtn' data-role="button" class="ui-btn-active">Close Call</a>
       </div>
     </div>
 
@@ -276,7 +283,7 @@
 <div data-role="page" id="existing" data-theme="b" class="my-page">
 
   <div data-role="header" data-theme="b" data-position="fixed">
-    <h1>Existing Room calls</h1>
+    <h1>Existing Calls</h1>
     <a href="#" data-rel="back" data-icon="arrow-l" data-role="button">Go back</a>
     <a href="#logout" class="ui-btn-right" data-rel="popup" data-position-to="window" data-transition="pop">Logout</a>
   </div><!-- /header -->
