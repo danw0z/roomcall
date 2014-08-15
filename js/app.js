@@ -12,7 +12,7 @@ $(function () {
     
 	idleTimer = null;
 	idleState = false;
-	idleWait = 15000;
+	idleWait = 30000;
 
         $(document).on('mousemove keydown scroll click ontouchmove', function () {
         
@@ -21,6 +21,7 @@ $(function () {
             idleTimer = setTimeout(function () {               
                 // Idle Event
                 $.mobile.changePage("#login", { transition: "none"});
+                $('#employeeID').focus();
                 idleState = true; }, idleWait);
         });
     

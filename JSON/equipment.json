@@ -2,12 +2,12 @@
 	"equipment": [	
 	{
 		"device": "Anesthesia Machine",
-		"issue": [ "Leak", "Bellows", "Flow Sensors", "User Error", "Vaporizer", "Absorber", "Jet Vent", "Move", "O2 Sensor", "O2 Tank", "Other"]
+		"issue": [ "Leak", "Bellows", "Flow Sensors", "User Error", "Vaporizer", "Absorber", "Jet Vent", "Move", "O2 Sensor", "O2 Tank", "Other", "Suction"]
 	},
 
 	{
 		"device": "Patient Monitor",
-		"issue": [ "Power", "Touch Screen", "Settings", "User Error", "Other"]
+		"issue": [ "Power", "Touch Screen", "Settings", "User Error", "Other", "Printer"]
 	},
 
 	{
@@ -32,7 +32,7 @@
 
 	{
 		"device": "ARKS",
-		"issue": [ "Touch Screen", "Monitor", "Network", "Keyboard", "User Error"]
+		"issue": [ "Touch Screen", "Monitor", "Network", "Keyboard", "User Error", "Printer"]
 	},
 
 	{
@@ -53,7 +53,13 @@
 	{
 		"device": "ESU",
 		"issue": [ "Hand Piece", "Return Pad", "Footswitch", "User Error", "Other"]
+	},
+
+	{
+		"device": "Nerve Stimulator",
+		"issue": [ "Battery", "Cable", "Pads", "Stimulator", "User Error", "Other"]
 	}
+
 
 
 
